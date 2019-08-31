@@ -1,4 +1,5 @@
 import os
+import re
 import json
 import tornado.options
 import tornado.ioloop
@@ -19,6 +20,11 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
         self.credit_card = None
         self.account_number = None
         return
+
+    def find_word(self,word,given_string):
+        preprocessed_word = word.strip()
+        raw_regex = re.compile(r"\b" + preprocessed_word + r"\b")
+
 
     def message_preprocessing(self,message):
         print(message)
