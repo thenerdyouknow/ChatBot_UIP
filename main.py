@@ -17,12 +17,16 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
     def open(self):
         print("WebSocket opened")
 
+    def construct_response(self,message):
+        server_response = {}
+        server_response["user"] = "Server"
+        server_response["message"] = "haha,it works!"
+        return server_response
+
     def on_message(self, message):
-        lol = {}
-        lol["user"] = "Server"
-        lol["message"] = "haha,it works!"
+        server_response = self.construct_response(message)
         self.write_message(message)
-        self.write_message(lol)
+        self.write_message(server_response)
 
     def on_close(self):
         print("WebSocket closed")

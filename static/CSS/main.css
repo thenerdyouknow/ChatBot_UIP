@@ -17,19 +17,20 @@ body {
 	padding:15px;
 }
 #messages{
-	min-height: 85vh;
-	max-height: 85vh;
+	min-height: 75vh;
+	max-height: 75vh;
 	overflow-y: scroll;
 }
 .send-button{
 	width: 100%;
-
+}
+.btn-lg{
+	border-radius: 1rem;
 }
 .messages-box{
 	background-color: #FFFFFF;
-	border-radius: 25px;
 	word-wrap:break-word;
-	margin: 10px;
+	margin-top:1rem;
 }
 .actual-message{
 	padding:10px;
@@ -41,3 +42,9 @@ body {
 /** {
   border: 1px solid #f00 !important;
 }*/
+.form-group{
+	padding: 10px;
+}
+.button-row{
+	margin-top: 30px;
+}

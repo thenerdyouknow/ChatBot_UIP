@@ -26,5 +26,6 @@ ws.onmessage = function(evt) {
     	messageBox.innerHTML = '<p class="server-message">' + '<b>'+messageDict.user+'</b>' + ": " + messageDict.message + '</p>';  
     	document.getElementById("messages").appendChild(messageBox);
     }
-    
+    var objDiv = document.getElementById("messages");
+	objDiv.scrollTop = objDiv.scrollHeight;   
 };
