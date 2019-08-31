@@ -15,7 +15,16 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
         return True
 
     def open(self):
-        print("WebSocket opened")
+        self.name = None
+        self.credit_card = None
+        self.account_number = None
+        return
+
+    def message_preprocessing(self,message):
+        print(message)
+        if(self.name == None):
+            self.name = message["user"]
+        return
 
     def construct_response(self,message):
         server_response = {}
@@ -25,6 +34,8 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
 
     def on_message(self, message):
         server_response = self.construct_response(message)
+        preprocessed_message = self.message_preprocessing(json.loads(message))
+        print(self.name)
         self.write_message(message)
         self.write_message(server_response)
 

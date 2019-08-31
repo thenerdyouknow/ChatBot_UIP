@@ -1,11 +1,15 @@
 var ws = new WebSocket("ws://localhost:8100/websocket");
 
+while(!user){
+    var user = prompt("What's your name?");
+};
+
 function sendMessage() {
     var messageInput = document.getElementById("send-message");
     var message = messageInput.value;
     var payload = {
         "message": message,
-        "user": "You"
+        "user": user
     }
     // Make the request to the WebSocket.
     ws.send(JSON.stringify(payload));
@@ -19,7 +23,7 @@ ws.onmessage = function(evt) {
     // Create a div with the format `user: message`.
     var messageBox = document.createElement("div");
     messageBox.className = "messages-box container";
-    if(messageDict.user === "You"){
+    if(messageDict.user === user){
     	messageBox.innerHTML = '<p class="actual-message">' + '<b>'+messageDict.user+'</b>' + ": " + messageDict.message + '</p>';  
     	document.getElementById("messages").appendChild(messageBox);
     }else{

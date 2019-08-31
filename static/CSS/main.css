@@ -31,6 +31,7 @@ body {
 	background-color: #FFFFFF;
 	word-wrap:break-word;
 	margin-top:1rem;
+	width:auto;
 }
 .actual-message{
 	padding:10px;
