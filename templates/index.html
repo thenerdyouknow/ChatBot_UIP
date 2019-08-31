@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat application</title>
+    <link rel="stylesheet" href="{{ static_url('CSS/main.css') }}"/>
+
+    <script src="{{ static_url('vendor/JS/jquery-3.4.1.min.js') }}"></script>
+    <script src="{{ static_url('vendor/JS/popper.min.js')  }}"></script>
+
+    <link rel="stylesheet" href="{{ static_url('vendor/bootstrap-4.3.1-dist/css/bootstrap.min.css') }}"/>
+    <script src="{{ static_url('vendor/bootstrap-4.3.1-dist/js/bootstrap.min.js') }}"></script>
+    
+    <script src="{{ static_url('JS/main.js') }}"></script>    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+     
+</head>
+<body>
+	<div class="chat-container">
+		 <div id="messages"></div>
+		 <div class="form-group" id="input-bar">
+		 	<form onsubmit="return sendMessage()">
+		 		<div class="container">
+			 		<div class="row">
+			 			<div class="col-10">
+			 				<input required id="send-message" type="text" >
+			 			</div>
+			 			<div class="col-2">
+			 				<button class="send-button btn-lg btn-primary mb-2">Send</button>
+			 			</div>
+			 		</div>
+			 	</div>
+        	</form>
+        </div>
+	</div>
+</body>
+</html>

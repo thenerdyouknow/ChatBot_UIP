@@ -1,0 +1,43 @@
+html {
+  height: 100%;
+}
+body {
+  min-height: 100%;
+}
+body {
+  display: flex;
+}
+.chat-container{
+	flex:1;
+	background-color: #17a2b8;
+}
+#send-message{
+	width: 100%;
+	border-radius: 25px;
+	padding:15px;
+}
+#messages{
+	min-height: 85vh;
+	max-height: 85vh;
+	overflow-y: scroll;
+}
+.send-button{
+	width: 100%;
+
+}
+.messages-box{
+	background-color: #FFFFFF;
+	border-radius: 25px;
+	word-wrap:break-word;
+	margin: 10px;
+}
+.actual-message{
+	padding:10px;
+}
+.server-message{
+	padding:10px;
+	text-align: right;
+}
+/** {
+  border: 1px solid #f00 !important;
+}*/
