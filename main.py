@@ -28,9 +28,6 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
 
     def luhns_algorithm(self,card_number):
 
-        if(len(card_number)<13 or len(card_number)>16):
-            return False
-
         for i in range(len(card_number)-2,-1,-2):
             sum_number = 0
             modified_number = str(int(card_number[i])*2)
@@ -44,10 +41,10 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
         return self.sum_and_modulo(card_number)
 
     def credit_validator(self,card_number):
-        raw_regex = re.compile("^\\d{13,16}$", re.IGNORECASE)
+        raw_regex = re.compile("^\\d+$", re.IGNORECASE)
         incidences = raw_regex.findall(card_number)
         if(len(incidences) == 1):
-            return self.luhns_algorithm()
+            return self.luhns_algorithm(card_number)
         else:
             return False
 
@@ -64,6 +61,11 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
         incidences = raw_regex.findall(given_string)
         return len(incidences)
 
+    def raw_find_word(self, given_regex,given_string):
+        raw_regex = re.compile(given_regex, re.IGNORECASE)
+        incidences = raw_regex.findall(given_string)
+        return len(incidences)
+
     def prepare_message(self,preprocessed_message):
         JSON_variable = {}
         JSON_variable['user'] = 'Server'
@@ -71,22 +73,23 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
         return JSON_variable
 
     def open(self):
-        self.write_message(self.prepare_message('Hello! I can help you with queries regarding your credit card or bank account! Please enter your query below!'))
+        self.write_message(self.prepare_message('Hello! I can help you with queries regarding your credit card or bank account! Please enter your query below!(Write "Stop" if you want to restart)'))
         self.name = None
         self.credit_card = None
         self.account_number = None
         self.credit = 0
         self.account = 0
+        self.last_message = ''
         return
 
     def message_preprocessing(self,message):
 
-        
         if(self.credit_card is None):
             credit_card_possibilities = ['credit card','credit-card','credit - card','bank card','account card']
             for each_word in credit_card_possibilities:
                 regex_result = self.find_word(each_word,message["message"])
                 if(regex_result>0):
+                    self.last_message = message["message"]
                     self.credit = 1
                     self.account = 0
                     return 'You query requires your credit card number! Please input it!'
@@ -97,16 +100,17 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
                         return 'Invalid card number! Please recheck!(We require a valid number to move forward, write "Stop" if you would like to ask something else!)'
                     elif(self.credit_validator(message["message"]) == True):
                         self.credit_card = message["message"]
-                        return 'Thank you for entering your card number! Now please enter your query again so we can assist you!'
+                        return 'Thank you for entering your card number!'
                 except ValueError:
                     pass
         
         if(self.account_number is None):
-            account_number_possibilities = ['account','savings','checking','balance in account','account balance','remaining money','balance money','how much money']
+            account_number_possibilities = ['account','savings','checking','balance in account','account balance','remaining money','balance money','amount left','checkings balance','savings balance','how much can i withdraw','amount of debit','debit limit']
             
             for each_word in account_number_possibilities:
                 regex_result = self.find_word(each_word,message["message"])
                 if(regex_result>0):
+                    self.last_message = message["message"]
                     self.account = 1
                     self.credit = 0
                     return 'Your query requires your bank account number! Please input it!'
@@ -115,7 +119,7 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
                 try:
                     if(self.account_validator(message["message"])):
                         self.account_number = message["message"]
-                        return 'Thank you for entering your account number! Please enter your query again so we can assist you!'
+                        return 'Thank you for entering your account number!'
 
                     elif(self.account_validator(message["message"]) == False):
                         return 'Invalid account number! (We require a valid number to move forward, write "Stop" if you would like to ask something else!)'
@@ -123,11 +127,39 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
                 except ValueError:
                     pass
 
+    def providing_details(self,message):
+        if(self.account_number is not None):
+            account_number_possibilities = ['account','savings','checking','balance in account','account balance','remaining money','balance money','checkings balance','savings balance','how much can i withdraw','amount of debit','debit limit']
+            for each_word in account_number_possibilities:
+                regex_result = self.find_word(each_word,message)
+                if(regex_result>0):
+                    return 'Your bank account numbered '+str(self.account_number)+ ' has a balance of 3400 dollars!'
+
+
+        if(self.credit_card is not None):
+            credit_card_possibilities = ['credit.*outstanding|outstanding.*credit','total.*credit|total.*credit','full.*credit|credit.*full']
+            for each_word in credit_card_possibilities:
+                regex_result = self.raw_find_word(each_word,message)
+                if(regex_result>0):
+                    self.last_message = ''
+                    return 'Your credit card numbered ' +str(self.credit_card) + ' has outstanding dues equal to 24,000 dollars!'
+
+            credit_card_due_possibilities = ['credit.*due|due.*credit','payable.*credit|credit.*payable','owed.*credit|credit.*owed']
+            for each_word in credit_card_due_possibilities:
+                regex_result = self.raw_find_word(each_word,message)
+                if(regex_result>0):
+                    self.last_message = ''
+                    return 'Your credit card numbered ' +str(self.credit_card) + ' has dues that equal to 10,000 dollars! This needs to be paid by 24th July,2019.'
+
+        return "I can't answer that. Please contact the branch!"
+
 
     def on_message(self, message):
 
         self.write_message(message)
         JSON_message = json.loads(message)
+
+        message_to_check = JSON_message['message']
 
         if(self.name is None):
             self.name = JSON_message["user"]
@@ -139,12 +171,19 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
             self.open()
             return
 
-        if(self.account_number is None or self.credit_card is None or self.name is None):
-            preprocessed_message = self.message_preprocessing(JSON_message)
-            final_message = self.prepare_message(preprocessed_message)
+        preprocessed_message = self.message_preprocessing(JSON_message)
+        final_message = self.prepare_message(preprocessed_message)
+        if(preprocessed_message == 'Thank you for entering your account number!' or
+            preprocessed_message == 'Thank you for entering your card number!'):
+            self.write_message(final_message)
+            message_to_check = self.last_message
+        elif(preprocessed_message is not None):
             self.write_message(final_message)
             return
 
+        response = self.providing_details(message_to_check)
+        final_message = self.prepare_message(response)
+        self.write_message(final_message)
         return
 
     def on_close(self):
@@ -158,7 +197,6 @@ def make_app():
         ],
         template_path = os.path.join(os.path.dirname( __file__ ),"templates"),
         static_path = os.path.join(os.path.dirname( __file__ ),"static"),
-        # ui_modules={'package_includes': PackagesIncludeModule},
         debug = True,
     )
  
