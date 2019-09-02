@@ -21,7 +21,12 @@ function sendMessage() {
 ws.onmessage = function(evt) {
     var messageDict = JSON.parse(evt.data);
     // Create a div with the format `user: message`.
+    if(messageDict.user === 'Server' && messageDict.message === 'Wipe'){
+		document.getElementById("messages").innerHTML = "";
+		return;
+    }
     var messageBox = document.createElement("div");
+    messageBox.setAttribute("id", "individual-message");
     messageBox.className = "messages-box container";
     if(messageDict.user === user){
     	messageBox.innerHTML = '<p class="actual-message">' + '<b>'+messageDict.user+'</b>' + ": " + messageDict.message + '</p>';  
