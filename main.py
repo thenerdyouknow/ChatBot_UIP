@@ -78,8 +78,8 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
         return JSON_variable
 
     def bank_account_regex(self,message):
-        raw_account_number_regex = ['balance.*account|account.*balance','money left.*account|account.*money left','remainder.*account|account.*remainder']
-        account_number_possibilities = ['balance in account','remaining money','balance money','amount left','checkings balance','savings balance','how much can i withdraw','amount of debit','debit limit']
+        raw_account_number_regex = ['balance.*account|account.*balance','balance.*bank|bank.*balance','money left.*account|account.*money left','remainder.*account|account.*remainder','how much.*account|account.*how much']
+        account_number_possibilities = ['balance in account','how much money do i have in the bank','remaining money','balance money','amount left','checkings balance','savings balance','how much can i withdraw','amount of debit','debit limit']
         for each_word in account_number_possibilities:
             regex_result = self.find_word(each_word,message)
             if(regex_result>0):
@@ -91,16 +91,23 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
         return False
 
     def credit_card_regex(self,message):
-        credit_card_possibilities = ['credit card?','credit-card','credit - card','bank card','account card']
+        
+        credit_card_possibilities = ['credit card','credit-card','credit - card','bank card','account card']
         for each_word in credit_card_possibilities:
             if(self.credit_find_word(each_word,message)>0):
                 return 'Your query is too vague, please clarify!'
-        credit_card_due_possibilities = ['credit.*due date|due date.*credit','payable.*credit|credit.*payable','owed.*credit|credit.*owed','date.*credit|credit.*date']
+        
+        credit_card_due_possibilities = ['credit.*due date|due date.*credit','payable.*credit|credit.*payable','owed.*credit|credit.*owed','date.*credit|credit.*date','have i paid.*credit|credit.*have i paid','credit.*bill|bill.*credit','last date.*bill|bill.*last date']
+        credit_card_due_sentences = ['money due on credit card','when is my credit amount due','due amount on credit card','due credit amount','due money on credit card','amount due on credit card','due on credit card']
         for each_regex in credit_card_due_possibilities:
             if(self.raw_find_word(each_regex,message)>0):
                 return 'Your credit card numbered ' +str(self.credit_card) + ' has dues that equal to 10,000 dollars! This needs to be paid by 24th July,2019.'
+        for raw_sentence in credit_card_due_sentences:
+            if(self.find_word(raw_sentence,message)>0):
+                return 'Your credit card numbered ' +str(self.credit_card) + ' has dues that equal to 10,000 dollars! This needs to be paid by 24th July,2019.'
+
         raw_credit_card_possibilities = ['credit.*outstanding|outstanding.*credit','total.*credit|total.*credit','full.*credit|credit.*full']
-        for each_regex in credit_card_possibilities:
+        for each_regex in raw_credit_card_possibilities:
             if(self.raw_find_word(each_regex,message)>0):
                 return 'Your credit card numbered ' +str(self.credit_card) + ' has total outstanding dues equal to 24,000 dollars!'
         return None        
@@ -163,7 +170,8 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
                 return 'Your bank account numbered '+str(self.account_number)+ ' has a balance of 3400 dollars!'
 
         if(self.credit_card is not None):
-            return self.credit_card_regex(message)
+            if(self.credit_card_regex(message) is not None):
+                return self.credit_card_regex(message)
 
         return "I can't answer that. Please contact the branch!"
 
