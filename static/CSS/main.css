@@ -40,6 +40,10 @@ body {
 	padding:10px;
 	text-align: right;
 }
+.server-reset{
+	padding: 10px;
+	text-align:center;
+}
 /** {
   border: 1px solid #f00 !important;
 }*/
