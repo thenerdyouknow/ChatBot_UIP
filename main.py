@@ -166,7 +166,7 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
 
         if(JSON_message["message"] == "Stop"):
             self.write_message(self.prepare_message('Resetting conversation...'))
-            time.sleep(2)
+            time.sleep(1.5)
             self.write_message(self.prepare_message('Wipe'))
             self.open()
             return
