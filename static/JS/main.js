@@ -1,4 +1,4 @@
-var ws = new WebSocket("ws://localhost:8100/websocket");
+var ws = new WebSocket("ws://10.1.56.113:8100/websocket");
 
 while(!user){
     var user = prompt("What's your name?");
@@ -32,7 +32,11 @@ ws.onmessage = function(evt) {
     	messageBox.innerHTML = '<p class="actual-message">' + '<b>'+messageDict.user+'</b>' + ": " + messageDict.message + '</p>';  
     	document.getElementById("messages").appendChild(messageBox);
     }else{
-    	messageBox.innerHTML = '<p class="server-message">' + '<b>'+messageDict.user+'</b>' + ": " + messageDict.message + '</p>';  
+        if(messageDict.message === 'Resetting conversation...'){
+            messageBox.innerHTML = '<p class="server-reset">' + '<b>'+messageDict.user+'</b>' + ": " + messageDict.message + '</p>';  
+        }else{
+            messageBox.innerHTML = '<p class="server-message">' + '<b>'+messageDict.user+'</b>' + ": " + messageDict.message + '</p>';  
+        }
     	document.getElementById("messages").appendChild(messageBox);
     }
     var objDiv = document.getElementById("messages");

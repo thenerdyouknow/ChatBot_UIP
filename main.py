@@ -105,7 +105,7 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
                     pass
         
         if(self.account_number is None):
-            account_number_possibilities = ['account','savings','checking','balance in account','account balance','remaining money','balance money','amount left','checkings balance','savings balance','how much can i withdraw','amount of debit','debit limit']
+            account_number_possibilities = ['account','savings','checking','balance in account','balance','remaining money','balance money','amount left','checkings balance','savings balance','how much can i withdraw','amount of debit','debit limit']
             
             for each_word in account_number_possibilities:
                 regex_result = self.find_word(each_word,message["message"])
@@ -129,7 +129,7 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
 
     def providing_details(self,message):
         if(self.account_number is not None):
-            account_number_possibilities = ['account','savings','checking','balance in account','account balance','remaining money','balance money','checkings balance','savings balance','how much can i withdraw','amount of debit','debit limit']
+            account_number_possibilities = ['balance in account','remaining money','how much money in account','balance money','checkings balance','savings balance','how much can i withdraw','amount of debit','debit limit']
             for each_word in account_number_possibilities:
                 regex_result = self.find_word(each_word,message)
                 if(regex_result>0):
@@ -154,6 +154,14 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
         return "I can't answer that. Please contact the branch!"
 
 
+    def conversation_starter(self,message):
+        starter_possibilities = ['hello','hi','sup',"how's it going",'how are they hanging','what can you do','help']
+        for each_word in starter_possibilities:
+            regex_count = self.find_word(each_word,message)
+            if(regex_count>0):
+                return 'Hello! I am the bank chatbot. I deal with queries related to your savings or checking account!'
+
+
     def on_message(self, message):
 
         self.write_message(message)
@@ -164,7 +172,9 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
         if(self.name is None):
             self.name = JSON_message["user"]
 
-        if(JSON_message["message"] == "Stop"):
+
+        stop_flag = self.find_word('stop',JSON_message["message"])
+        if(stop_flag == 1):
             self.write_message(self.prepare_message('Resetting conversation...'))
             time.sleep(1.5)
             self.write_message(self.prepare_message('Wipe'))
