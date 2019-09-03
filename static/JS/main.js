@@ -1,4 +1,4 @@
-var ws = new WebSocket("ws://10.1.56.113:8100/websocket");
+var ws = new WebSocket("ws://10.1.56.142:8100/websocket");
 
 while(!user){
     var user = prompt("What's your name?");
