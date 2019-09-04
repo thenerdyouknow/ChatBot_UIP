@@ -9,3 +9,8 @@ To run this application:
 
 Python version used during development was Python 3.6. Any Python version that is 3+ should work.
 
+Assumptions:
+1. The queries are in English.
+2. The queries are legible sentences.
+3. No typos are made while trying to ask what is being said.
+4. Queries are not vague.

@@ -97,7 +97,7 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
             if(self.credit_find_word(each_word,message)>0):
                 return 'Your query is too vague, please clarify!'
         
-        credit_card_due_possibilities = ['credit.*due date|due date.*credit','payable.*credit|credit.*payable','owed.*credit|credit.*owed','date.*credit|credit.*date','have i paid.*credit|credit.*have i paid','credit.*bill|bill.*credit','last date.*bill|bill.*last date']
+        credit_card_due_possibilities = ['credit.*due date|due date.*credit','payable.*credit|credit.*payable','owed.*credit|credit.*owed','date.*credit|credit.*date','have i paid.*credit|credit.*have i paid','credit.*bill|bill.*credit','last date.*bill|bill.*last date','payment.*credit|credit.*payment','payments.*credit|credit.*payments','payment.*card|card.*payment','any.*credit|credit.*any','latest.*credit|credit.*latest']
         credit_card_due_sentences = ['money due on credit card','when is my credit amount due','due amount on credit card','due credit amount','due money on credit card','amount due on credit card','due on credit card']
         for each_regex in credit_card_due_possibilities:
             if(self.raw_find_word(each_regex,message)>0):
@@ -179,7 +179,7 @@ class EchoWebSocket(tornado.websocket.WebSocketHandler):
     def conversation_starter(self,message):
         starter_possibilities = ['hello','hi',"what's up",'sup',"how's it going",'how are they hanging','what can you do','help']
         for each_word in starter_possibilities:
-            regex_count = self.find_word(each_word,message)
+            regex_count = self.credit_find_word(each_word,message)
             if(regex_count>0):
                 return 'Hello! I am the bank chatbot. I deal with queries related to your savings or checking account!'
 
