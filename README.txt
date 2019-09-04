@@ -3,7 +3,7 @@ This is a Tornado Web Application that uses Websockets for bi-directional commun
 To run this application:
 1. Create new virtual environment using virtualenv <virtual env name>.
 2. Activate virtualenv that was just created.
-3. Move into the directory 'UIP_Assignment1'
+3. Move into the directory with the files.
 4. pip/pip3 install -r requirements.txt
 5. python main.py
 
