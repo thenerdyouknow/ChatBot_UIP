@@ -1,6 +1,6 @@
-This is a Tornado Web Application that uses Websockets for bi-directional communication for the chatbot.
+### This is a Tornado Web Application that uses Websockets for bi-directional communication for the chatbot.
 
-To run this application:
+#### To run this application:
 1. Create new virtual environment using virtualenv <virtual env name>.
 2. Activate virtualenv that was just created.
 3. Move into the directory with the files.
@@ -9,7 +9,7 @@ To run this application:
 
 Python version used during development was Python 3.6. Any Python version that is 3+ should work.
 
-Assumptions:
+#### Assumptions:
 1. The queries are in English.
 2. The queries are legible sentences.
 3. No typos are made while trying to ask what is being said.
